@@ -27,7 +27,14 @@ class ModelMetadata():
     
     def __hash__(self):
         return hash((self.model_name, self.version))
-    
+
+    def update_latency(self, new_latency: float) -> None:
+        if not isinstance(new_latency, (int, float)):
+            raise TypeError("The new latency must be a numeric value.")
+        elif new_latency <= 0:
+            raise ValueError("The new latency should be a value above zero.")
+        self.latency = new_latency
+
 if __name__ == "__main__":
 
     exp1 = ModelMetadata("resnet50", "v1.2.0", "pytorch", 50.3, True)
