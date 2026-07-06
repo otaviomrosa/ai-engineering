@@ -1,11 +1,14 @@
+import sys
+import os
 import re
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from day04.base_model import BaseModel
 
-class ModelMetadata():
+class ModelMetadata(BaseModel):
 
     SUPPORTED_FRAMEWORKS = frozenset({"onnx", "pytorch", "tensorflow"})
     
     def __init__(self, name: str, version: str, framework: str, latency: float, is_production: bool = False):
-        
         if framework not in self.SUPPORTED_FRAMEWORKS:
             raise ValueError(
                 f"The framework {framework} is not supported. "
@@ -17,6 +20,8 @@ class ModelMetadata():
         self.framework = framework
         self.is_production = is_production
         self.latency = latency
+
+    __slots__ = ("model_name", "version", "framework", "_is_production", "_latency")
 
     @property
     def latency(self) -> float:
@@ -66,25 +71,40 @@ class ModelMetadata():
     @staticmethod
     def is_valid_version(version:str) -> bool:
         return bool(re.fullmatch(r"^v\d+\.\d+\.\d+$", version))
+    
+    def predict(self, input_data) -> dict:
+        result = f"self.inference({input_data})"
+        return {"model": self.model_name, "version": self.version, "result": result, "latency_ms": self.latency}
+
+    def validate_input(self, input_data) -> bool:
+        return True if input_data else False
+
+    def get_model_info(self) -> dict:
+        return {"name": self.model_name, "version": self.version, "framework": self.framework}
 
 if __name__ == "__main__":
 
-    exp1 = ModelMetadata("resnet50", "v1.2.0", "pytorch", 50.3, True)
-    exp2 = ModelMetadata("resnet50", "v1.2.0", "tensorflow", 12.5, False)
-    exp3 = ModelMetadata("bert-base", "v2.0.1", "onnx", 400.3, False)
-    exp4 = ModelMetadata("bert-base", "v2.0.1", "pytorch", 1023.1, True)
+    m1 = ModelMetadata("resnet50", "v1.2.0", "pytorch", 50.3, True)
+    m2 = ModelMetadata("resnet50", "v1.2.0", "tensorflow", 12.5, False)
+    m3 = ModelMetadata("bert-base", "v2.0.1", "onnx", 400.3, False)
+    m4 = ModelMetadata("bert-base", "v2.0.1", "pytorch", 1023.1, True)
     
-    experiment_suite = set()
-    experiment_suite.add(exp1)
-    experiment_suite.add(exp2)
-    experiment_suite.add(exp3)
-    experiment_suite.add(exp4)
+    model_suite = set()
+    model_suite.add(m1)
+    model_suite.add(m2)
+    model_suite.add(m3)
+    model_suite.add(m4)
 
-    print(experiment_suite)
-    print(exp1)
-    print(exp4)
+    print(model_suite)
+    print(m1)
+    print(m4)
 
     try:
-        exp5 = ModelMetadata("resnet50", "v1.2.0", "jax", 29.2, True)
+        m5 = ModelMetadata("resnet50", "v1.2.0", "jax", 29.2, True)
     except ValueError as e:
         print(f"Caught expected error: {e}")
+
+    try:
+        print(m3.__dict__)
+    except AttributeError as e:
+        print(f"Caught expected errorr: {e}")

@@ -40,3 +40,11 @@ registry.promote("u-net", "v1.20")
 
 print(m2)
 
+print(m2.predict(2))
+
+print(m1.describe())
+
+try:
+    m2.newattr = "This is totally gonna work"
+except AttributeError as e:
+    print(f"Caught expected error: {e}")
