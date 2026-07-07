@@ -1,7 +1,4 @@
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from day01.model_metadata import ModelMetadata
+from model_metadata import ModelMetadata
 
 class ModelRegistry():
     def __init__(self):
