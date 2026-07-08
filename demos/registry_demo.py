@@ -1,7 +1,4 @@
-import sys
-import os
-from model_metadata import ModelMetadata
-from model_registry import ModelRegistry
+from model_registry import ModelMetadata, ModelRegistry
 
 d1 = {
     "model_name": "resnet50",
@@ -44,6 +41,7 @@ print(m2.predict(2))
 print(m1.describe())
 
 try:
-    m2.newattr = "This is totally gonna work"
+    pass #commented out actual try statement cause pylance kept flagging it
+    #m2.newattr = "This is totally gonna work"
 except AttributeError as e:
     print(f"Caught expected error: {e}")

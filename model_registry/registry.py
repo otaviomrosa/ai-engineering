@@ -1,4 +1,4 @@
-from model_metadata import ModelMetadata
+from .metadata import ModelMetadata
 
 class ModelRegistry():
     def __init__(self):
