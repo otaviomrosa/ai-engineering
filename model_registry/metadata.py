@@ -1,4 +1,4 @@
-import re
+import re, asyncio
 from .base_model import BaseModel
 
 class ModelMetadata(BaseModel):
@@ -78,6 +78,10 @@ class ModelMetadata(BaseModel):
 
     def get_model_info(self) -> dict:
         return {"name": self.model_name, "version": self.version, "framework": self.framework}
+    
+    async def async_predict(self, input_data: dict) -> dict:
+        await asyncio.sleep(self.latency / 1000)
+        return self.predict(input_data)
 
 if __name__ == "__main__":
 
